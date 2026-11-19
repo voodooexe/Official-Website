@@ -3,29 +3,81 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A tiny static site for testing GitHub Pages hosting.">
-  <title>Hello, GitHub Pages!</title>
+  <meta name="description" content="Find Voodoo Doll across social media.">
+  <title>Voodoo Doll | Socials</title>
   <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
 </head>
 <body>
   <main class="card">
-    <div class="eyebrow"><span class="dot"></span> STATIC SITE · LIVE ON THE WEB</div>
-    <h1>It works<span class="accent">.</span></h1>
-    <p class="intro">Your GitHub Pages test site is ready. If you can read this page, your static hosting is working.</p>
-    <div class="status">
-      <span class="status-icon">✓</span>
-      <div>
-        <strong>All systems go</strong>
-        <small>HTML, CSS and JavaScript loaded successfully</small>
-      </div>
+    <div class="eyebrow">
+      <span class="dot"></span>
+      FIND ME ONLINE
     </div>
-    <button id="test-button" type="button">Test the button <span aria-hidden="true">→</span></button>
-    <p id="message" class="message" aria-live="polite">Click the button to test JavaScript.</p>
+
+    <h1>Voodoo Doll<span class="accent">.</span></h1>
+    <p class="intro">
+      Find me across the internet. Follow, connect, and stay in touch.
+    </p>
+
+    <div class="social-links">
+      <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">
+        <span class="social-icon">▶</span>
+        <span>YouTube</span>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">
+        <span class="social-icon">◎</span>
+        <span>Instagram</span>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer">
+        <span class="social-icon">♪</span>
+        <span>TikTok</span>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a href="https://x.com/" target="_blank" rel="noopener noreferrer">
+        <span class="social-icon">𝕏</span>
+        <span>X (Twitter)</span>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a href="https://discord.com/" target="_blank" rel="noopener noreferrer">
+        <span class="social-icon">◈</span>
+        <span>Discord</span>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a href="https://github.com/VoodooChild1989" target="_blank" rel="noopener noreferrer">
+        <span class="social-icon">⌘</span>
+        <span>GitHub</span>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a href="https://t.me/" target="_blank" rel="noopener noreferrer">
+        <span class="social-icon">➤</span>
+        <span>Telegram</span>
+        <span class="arrow">↗</span>
+      </a>
+
+      <a href="mailto:your@email.com">
+        <span class="social-icon">✉</span>
+        <span>Email</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+
     <footer>
-      <span>Made for your GitHub Pages test</span>
+      <span>© Voodoo Doll</span>
       <span id="year"></span>
     </footer>
   </main>
+
+  <script>
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+  </script>
 </body>
 </html>
