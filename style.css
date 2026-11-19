@@ -60,6 +60,10 @@ body {
   padding: clamp(22px, 4.5vw, 42px);
   background: var(--black);
   border: clamp(5px, 1vw, 8px) solid var(--white);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.75),
+    0 10px 25px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 0, 0, 0.15);
 }
 
 /* Header */
@@ -313,5 +317,198 @@ footer {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+
+/* =========================================
+   PLAYFUL MOTION LAYER
+   ========================================= */
+
+/* Entrance: the panel pops in and settles */
+.card {
+  transform-origin: 50% 65%;
+  animation: card-pop 850ms cubic-bezier(.2, 1.35, .35, 1) both;
+  will-change: transform, opacity;
+}
+
+@keyframes card-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(34px) scale(.94) rotate(-1.2deg);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.012) rotate(.25deg);
+  }
+  82% {
+    transform: translateY(2px) scale(.996) rotate(-.12deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
+}
+
+/* The little red diamond has its own personality */
+.dot {
+  animation: diamond-wiggle 3.2s ease-in-out 1s infinite;
+  transform-origin: center;
+}
+
+@keyframes diamond-wiggle {
+  0%, 72%, 100% { transform: rotate(45deg) scale(1); }
+  78% { transform: rotate(135deg) scale(1.22); }
+  84% { transform: rotate(35deg) scale(.92); }
+  90% { transform: rotate(55deg) scale(1.08); }
+}
+
+/* Heading letters reveal with a playful stagger */
+h1 .letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(.55em) rotate(7deg) scale(.85);
+  animation: letter-pop 520ms cubic-bezier(.2, 1.4, .35, 1) forwards;
+  animation-delay: calc(420ms + var(--i) * 38ms);
+}
+
+h1 .letter.space {
+  width: .28em;
+}
+
+@keyframes letter-pop {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0) scale(1);
+  }
+}
+
+/* Supporting copy eases in after the title */
+.intro {
+  animation: copy-arrive 650ms ease-out 850ms both;
+}
+
+@keyframes copy-arrive {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Social links arrive one by one */
+.social-links a {
+  opacity: 0;
+  animation: link-arrive 560ms cubic-bezier(.2, 1.25, .35, 1) forwards;
+}
+
+.social-links a:nth-child(1) { animation-delay: 980ms; }
+.social-links a:nth-child(2) { animation-delay: 1.08s; }
+.social-links a:nth-child(3) { animation-delay: 1.18s; }
+.social-links a:nth-child(4) { animation-delay: 1.28s; }
+.social-links a:nth-child(5) { animation-delay: 1.38s; }
+
+@keyframes link-arrive {
+  0% { opacity: 0; }
+  70% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+/* Hover: lively lift, tilt, and spring-back */
+.social-links a {
+  transform-origin: 50% 70%;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 220ms ease,
+    transform 260ms cubic-bezier(.2, 1.5, .35, 1);
+}
+
+.social-icon {
+  transition:
+    color 180ms ease,
+    transform 320ms cubic-bezier(.2, 1.6, .35, 1);
+}
+
+.arrow {
+  transition:
+    color 180ms ease,
+    transform 260ms cubic-bezier(.2, 1.5, .35, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .social-links a:hover {
+    transform: translateX(7px) translateY(-3px) rotate(-.45deg) scale(1.012);
+    box-shadow: 5px 6px 0 rgba(255, 0, 2, .32);
+    border-color: var(--white);
+  }
+
+  .social-links a:nth-child(even):hover {
+    transform: translateX(7px) translateY(-3px) rotate(.45deg) scale(1.012);
+  }
+
+  .social-links a:hover .social-icon {
+    transform: rotate(-12deg) scale(1.24);
+  }
+
+  .social-links a:nth-child(2):hover .social-icon,
+  .social-links a:nth-child(4):hover .social-icon {
+    transform: rotate(12deg) scale(1.24);
+  }
+
+  .social-links a:hover .arrow {
+    transform: translate(5px, -5px) scale(1.18);
+  }
+}
+
+/* Tactile response on touchscreens */
+.social-links a:active {
+  transform: translateY(2px) scale(.975);
+  box-shadow: 0 0 0 rgba(255, 0, 2, 0);
+  transition-duration: 90ms;
+}
+
+/* Footer gently appears last */
+footer {
+  animation: footer-arrive 600ms ease-out 1.55s both;
+}
+
+@keyframes footer-arrive {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Keep motion comfortable on smaller screens */
+@media (max-width: 600px) {
+  .card {
+    animation-duration: 700ms;
+  }
+
+  .social-links a {
+    animation-duration: 480ms;
+  }
+
+  @media (hover: none) {
+    .social-links a:active .social-icon {
+      transform: scale(1.2) rotate(-10deg);
+    }
+  }
+}
+
+/* Accessibility: remove non-essential motion when requested */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .dot,
+  h1 .letter,
+  .intro,
+  .social-links a,
+  footer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .social-links a,
+  .social-icon,
+  .arrow {
+    transition: none !important;
   }
 }
