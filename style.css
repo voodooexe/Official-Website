@@ -823,21 +823,9 @@ h1 .letter {
 /* Refined motion pass: more movement across the page, kept restrained and deliberate. */
 :root {
   --motion-ease: cubic-bezier(.22, 1, .36, 1);
-  --scroll-progress: 0%;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  z-index: 20;
-  top: 0;
-  left: 0;
-  width: var(--scroll-progress);
-  height: 2px;
-  background: var(--red);
-  pointer-events: none;
-  transition: width 80ms linear;
-}
+
 
 .playful-panel.is-visible {
   transition:
@@ -938,23 +926,6 @@ h1 .letter {
     overflow: hidden;
   }
 
-  .social-links a::after {
-    content: "";
-    position: absolute;
-    left: 14px;
-    right: 14px;
-    bottom: 7px;
-    height: 1px;
-    background: var(--red);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 320ms var(--motion-ease);
-  }
-
-  .social-links a:hover::after {
-    transform: scaleX(1);
-  }
-
   .social-links a:hover .arrow {
     transform: translate(3px, -2px);
   }
@@ -1002,7 +973,6 @@ h1 .letter {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body::before { transition: none; }
   .motion-ready .portfolio-card,
   .motion-ready .social-links a,
   .motion-ready .artwork-thumb,
@@ -1441,5 +1411,26 @@ h1 .letter {
   .artwork-lightbox.is-closing,
   .artwork-lightbox.is-closing::backdrop {
     animation: none !important;
+  }
+}
+
+/* Faster motion pass: preserve every effect, but shorten its timing. */
+@media (prefers-reduced-motion: no-preference) {
+  *, *::before, *::after {
+    animation-duration: 450ms !important;
+    transition-duration: 180ms !important;
+  }
+
+  .portfolio-card.is-visible {
+    animation-duration: 5.5s !important;
+  }
+
+  .artwork-lightbox.is-closing,
+  .artwork-lightbox.is-closing::backdrop {
+    animation-duration: 190ms !important;
+  }
+
+  .lightbox-image.is-entering {
+    animation-duration: 230ms !important;
   }
 }

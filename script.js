@@ -128,7 +128,7 @@
         artworkChangeTimer = window.setTimeout(() => {
           commitArtwork();
           lightboxImage.classList.remove("is-exiting", "slide-next", "slide-previous");
-        }, 150);
+        }, 100);
       };
       preloader.onerror = () => {
         if (token !== artworkChangeToken) return;
@@ -173,7 +173,7 @@
         lightbox.classList.remove("is-closing");
         if (typeof lightbox.close === "function") lightbox.close();
         else lightbox.removeAttribute("open");
-      }, 260);
+      }, 190);
     };
 
     previousButton?.addEventListener("click", () => moveArtwork(-1));
@@ -221,21 +221,4 @@
     });
   }
 
-  // A slim scroll indicator gives the page a quiet sense of progression.
-  if (!reduceMotion) {
-    let ticking = false;
-    const updateScrollProgress = () => {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollable > 0 ? window.scrollY / scrollable : 0;
-      document.documentElement.style.setProperty("--scroll-progress", `${progress * 100}%`);
-      ticking = false;
-    };
-
-    window.addEventListener("scroll", () => {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(updateScrollProgress);
-    }, { passive: true });
-    updateScrollProgress();
-  }
 })();
