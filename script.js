@@ -83,29 +83,64 @@
   const artworkItems = [...document.querySelectorAll(".artwork-thumb")];
   let activeArtworkIndex = -1;
   let touchStartX = null;
+  let artworkChangeTimer = null;
+  let artworkChangeToken = 0;
 
   if (lightbox && lightboxImage && closeButton && artworkItems.length) {
-    const showArtwork = (index) => {
-      activeArtworkIndex = (index + artworkItems.length) % artworkItems.length;
-      const thumbnail = artworkItems[activeArtworkIndex];
+    const showArtwork = (index, direction = 0, animate = false) => {
+      const nextIndex = (index + artworkItems.length) % artworkItems.length;
+      const thumbnail = artworkItems[nextIndex];
       const image = thumbnail.querySelector("img");
       if (!image) return;
 
-      lightboxImage.src = thumbnail.dataset.full || image.src;
-      lightboxImage.alt = image.alt || thumbnail.getAttribute("aria-label") || "Portfolio artwork";
-      if (lightboxCaption) {
-        lightboxCaption.textContent = `${activeArtworkIndex + 1} / ${artworkItems.length}`;
+      const nextSrc = thumbnail.dataset.full || image.src;
+      const nextAlt = image.alt || thumbnail.getAttribute("aria-label") || "Portfolio artwork";
+      const token = ++artworkChangeToken;
+
+      window.clearTimeout(artworkChangeTimer);
+      lightboxImage.classList.remove("is-exiting", "is-entering", "slide-next", "slide-previous");
+
+      const commitArtwork = () => {
+        if (token !== artworkChangeToken) return;
+        activeArtworkIndex = nextIndex;
+        lightboxImage.src = nextSrc;
+        lightboxImage.alt = nextAlt;
+        if (lightboxCaption) {
+          lightboxCaption.textContent = `${activeArtworkIndex + 1} / ${artworkItems.length}`;
+        }
+
+        if (animate && !reduceMotion) {
+          lightboxImage.classList.add("is-entering", direction < 0 ? "slide-previous" : "slide-next");
+          requestAnimationFrame(() => requestAnimationFrame(() => lightboxImage.classList.remove("is-entering")));
+        }
+      };
+
+      // Preload first so a slow image never leaves the preview blank mid-transition.
+      if (!animate || reduceMotion || activeArtworkIndex < 0) {
+        commitArtwork();
+        return;
       }
 
-      if (!reduceMotion) {
-        lightboxImage.classList.remove("is-changing");
-        void lightboxImage.offsetWidth;
-        lightboxImage.classList.add("is-changing");
-      }
+      const preloader = new Image();
+      preloader.onload = () => {
+        if (token !== artworkChangeToken) return;
+        lightboxImage.classList.add("is-exiting", direction < 0 ? "slide-previous" : "slide-next");
+        artworkChangeTimer = window.setTimeout(() => {
+          commitArtwork();
+          lightboxImage.classList.remove("is-exiting", "slide-next", "slide-previous");
+        }, 150);
+      };
+      preloader.onerror = () => {
+        if (token !== artworkChangeToken) return;
+        commitArtwork();
+      };
+      preloader.src = nextSrc;
     };
 
     artworkItems.forEach((thumbnail, index) => {
       thumbnail.addEventListener("click", () => {
+        window.clearTimeout(closeAnimationTimer);
+        lightbox.classList.remove("is-closing");
         showArtwork(index);
         if (typeof lightbox.showModal === "function") lightbox.showModal();
         else lightbox.setAttribute("open", "");
@@ -118,15 +153,37 @@
       });
     });
 
-    const moveArtwork = (direction) => showArtwork(activeArtworkIndex + direction);
+    const moveArtwork = (direction) => showArtwork(activeArtworkIndex + direction, direction, true);
+    let closeAnimationTimer = null;
     const closeLightbox = () => {
-      if (typeof lightbox.close === "function") lightbox.close();
-      else lightbox.removeAttribute("open");
+      if (!lightbox.open && !lightbox.hasAttribute("open")) return;
+      window.clearTimeout(closeAnimationTimer);
+
+      if (reduceMotion) {
+        if (typeof lightbox.close === "function") lightbox.close();
+        else lightbox.removeAttribute("open");
+        return;
+      }
+
+      lightbox.classList.remove("is-closing");
+      // Force the class removal to take effect before starting the exit animation.
+      void lightbox.offsetWidth;
+      lightbox.classList.add("is-closing");
+      closeAnimationTimer = window.setTimeout(() => {
+        lightbox.classList.remove("is-closing");
+        if (typeof lightbox.close === "function") lightbox.close();
+        else lightbox.removeAttribute("open");
+      }, 260);
     };
 
     previousButton?.addEventListener("click", () => moveArtwork(-1));
     nextButton?.addEventListener("click", () => moveArtwork(1));
     closeButton.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("cancel", (event) => {
+      event.preventDefault();
+      closeLightbox();
+    });
 
     lightbox.addEventListener("click", (event) => {
       if (event.target === lightbox) closeLightbox();
