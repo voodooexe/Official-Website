@@ -1434,3 +1434,18 @@ h1 .letter {
     animation-duration: 230ms !important;
   }
 }
+
+
+/* Social PNG icons: keep them compact inside the link buttons. */
+.social-links a .social-icon {
+  display: block;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px;
+  max-width: 28px !important;
+  min-height: 28px;
+  max-height: 28px !important;
+  flex: 0 0 28px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
